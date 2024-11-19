@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 dní Ethereum</title>
+    <!-- Zahrnutí knihovny Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <h1>30 dní Ethereum</h1>
+        <canvas id="cryptoChart"></canvas>
+    </div>
+
+<script type="text/javascript">
+    var dates = JSON.parse('{{ dates | tojson | safe }}');
+    var prices = JSON.parse('{{ prices | tojson | safe }}');
+
+    // Zkontrolujte, že data byla správně předána
+    console.log(dates);
+    console.log(prices);
+
+    // Vytvoření grafu pomocí Chart.js
+    var ctx = document.getElementById('cryptoChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,  // Časová razítka jako popisky pro osu X
+            datasets: [{
+                label: 'Cena Ethereum (USD)',  // Popis pro dataset
+                data: prices,  // Ceny jako data pro osu Y
+                borderColor: '#8b93b3',  // Barva čáry
+                backgroundColor: 'rgba(139,147,179,0.38)',  // Barva pozadí
+                fill: true,  // Vyplnit oblast pod čárou
+                tension: 0,  // Zaoblení čáry
+                animation: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'category',  // Nastavení osy X jako kategorií (ne jako časová osa)
+                    title: {
+                        display: true,
+                        text: 'Čas'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Cena v USD'
+                    }
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Cena: $' + tooltipItem.raw.toFixed(2);  // Zobrazí cenu s dvěma desetinnými místy
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
